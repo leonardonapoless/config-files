@@ -18,16 +18,15 @@ local apps = {
   ['0'] = "iPhone Mirroring"
 }
 
--- Core launch/toggle logic
+-- Core launch/toggle logic (Corrected)
 local function launchOrToggle(appName)
-  local app = hs.application.get(appName)
-  local focusedWindow = hs.window.focusedWindow()
+  local app = hs.application.find(appName)
 
-  if focusedWindow and focusedWindow:application():name() == appName then
+  -- If the app is already the frontmost application, hide it.
+  if app and app:isFrontmost() then
     app:hide()
-  elseif app and app:isFrontmost() == false then
-    app:activate()
   else
+    -- Otherwise, launch the app if it's not running, or focus it if it is.
     hs.application.launchOrFocus(appName)
   end
 end
@@ -47,4 +46,3 @@ end
 hs.hotkey.bind({'cmd', 'alt'}, 'R', function()
   hs.reload()
 end)
-
